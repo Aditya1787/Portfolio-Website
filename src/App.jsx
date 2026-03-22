@@ -5,10 +5,8 @@ import {
   Moon, Sun, Menu, X, Github, Linkedin, Mail, Download, 
   ExternalLink, ChevronRight, Award, GraduationCap, 
   Code2, Database, Layout, Smartphone, BookOpen, Terminal, CheckCircle2,
-  Trophy, Target, Layers, Star
+  Trophy, Target, Layers, Star, Cpu, Globe, Wrench, Filter
 } from 'lucide-react';
-import { Canvas } from '@react-three/fiber';
-import { OrbitControls, Text3D, Center, Float, Environment, ContactShadows } from '@react-three/drei';
 import { Link } from 'react-scroll';
 
 // New Animation Dependencies
@@ -16,7 +14,7 @@ import { Particles, initParticlesEngine } from "@tsparticles/react";
 import { loadSlim } from "@tsparticles/slim";
 
 // --- DATA ---
-const NAV_LINKS = ['Home', 'About', 'Skills', 'Projects', 'Achievements', 'Education', 'Training', 'Contact'];
+const NAV_LINKS = ['Home', 'About', 'Skills', 'Projects', 'Achievements', 'Education', 'Training', 'Certificates', 'Contact'];
 
 const SKILLS = [
   { name: 'C++', category: 'languages', color: '#00599C' },
@@ -103,9 +101,115 @@ const PROJECTS = [
 ];
 
 const ACHIEVEMENTS = [
-  { label: 'DSA Problems Solved', value: 600, suffix: "+", icon: <Target size={32} />, desc: "Across LeetCode, GFG & CodeStudio" },
-  { label: 'LeetCode Rating', value: 1481, suffix: "", icon: <Star size={32} />, desc: "Competitive programming achievements" },
-  { label: 'Projects Built', value: 3, suffix: "+", icon: <Layers size={32} />, desc: "Full-stack web & mobile apps" }
+  { label: 'DSA Problems Solved', value: 600, suffix: '+', icon: <Target size={32} />, desc: 'Across LeetCode, GFG & CodeStudio', color: '#6366f1' },
+  { label: 'LeetCode Rating', value: 1481, suffix: '', icon: <Star size={32} />, desc: 'Active competitive programmer', color: '#f59e0b' },
+  { label: 'Projects Built', value: 5, suffix: '+', icon: <Layers size={32} />, desc: 'Full-stack web & mobile apps', color: '#10b981' },
+  { label: 'Certifications', value: 2, suffix: '', icon: <Award size={32} />, desc: 'Industry-recognized credentials', color: '#a855f7' },
+];
+
+const PLATFORMS = [
+  {
+    name: 'LeetCode',
+    handle: '@adityakm8787',
+    color: '#f59e0b',
+    bg: 'rgba(245,158,11,0.08)',
+    border: 'rgba(245,158,11,0.25)',
+    emoji: '🟡',
+    stats: [
+      { label: 'Problems Solved', value: '350+' },
+      { label: 'Max Rating', value: '1481' },
+      { label: 'Contest Rating', value: 'Knight' },
+    ],
+    link: 'https://leetcode.com/u/adityakm8787/'
+  },
+  {
+    name: 'GeeksForGeeks',
+    handle: '@adityam8787',
+    color: '#16a34a',
+    bg: 'rgba(22,163,74,0.08)',
+    border: 'rgba(22,163,74,0.25)',
+    emoji: '🟢',
+    stats: [
+      { label: 'Problems Solved', value: '200+' },
+      { label: 'Score', value: '900+' },
+      { label: 'Institute Rank', value: 'Top 10%' },
+    ],
+    link: 'https://www.geeksforgeeks.org/user/adityam8787/'
+  },
+];
+
+const TICKER_ITEMS = [
+  '🏆 LeetCode Rating: 1481',
+  '⚡ 600+ DSA Problems Solved',
+  '🚀 5+ Full-Stack Projects Shipped',
+  '🥇 Top 10% on GeeksForGeeks',
+  '📱 2 Production-Grade Mobile Apps',
+  '🎓 2 Industry Certifications',
+  '💡 MERN + Flutter Developer',
+  '🔥 Consistent Coder – Daily Streak',
+];
+
+const CERTS = [
+  {
+    id: 1,
+    title: 'Java Programming',
+    issuer: 'iamneo / LPU',
+    period: 'Jan 2025 – May 2025',
+    hours: '72 Hours',
+    color: '#ec4899',
+    image: '/certificates/cert_java.png',
+    tag: 'Programming'
+  },
+  {
+    id: 2,
+    title: 'Object Oriented Programming',
+    issuer: 'neo colab / LPU',
+    period: 'Aug 2024 – Dec 2024',
+    hours: '72 Hours',
+    color: '#f59e0b',
+    image: '/certificates/cert_oop.png',
+    tag: 'Core CS'
+  },
+  {
+    id: 3,
+    title: 'Computer Programming',
+    issuer: 'neo colab / LPU',
+    period: 'Jan 2024 – May 2024',
+    hours: '72 Hours',
+    color: '#06b6d4',
+    image: '/certificates/cert_cp.png',
+    tag: 'Programming'
+  },
+  {
+    id: 4,
+    title: 'Data Structures & Algorithms',
+    issuer: 'neo colab / LPU',
+    period: 'Aug 2024 – Dec 2024',
+    hours: '72 Hours',
+    color: '#6366f1',
+    image: '/certificates/cert_dsa.png',
+    tag: 'DSA'
+  },
+  {
+    id: 5,
+    title: 'Full Stack Development (React & Node)',
+    issuer: 'LPU Centre for Professional Enhancement',
+    period: 'Jun 2025 – Jul 2025',
+    hours: 'Grade B',
+    color: '#f97316',
+    image: '/certificates/cert_fullstack.png',
+    tag: 'Full Stack'
+  },
+  {
+    id: 6,
+    title: 'Introduction to Mobile App Development',
+    issuer: 'IBM / Coursera',
+    period: 'Mar 2026',
+    hours: 'Verified Certificate',
+    color: '#1d4ed8',
+    image: '/certificates/cert_mobile.png',
+    tag: 'Mobile Dev'
+  },
 ];
 
 const EDUCATION = [
@@ -148,67 +252,81 @@ const CERTIFICATES = [
   { title: 'Flutter App Development', period: 'Aug\' 25 - Oct\' 25' }
 ];
 
-// --- 3D SKILLS COMPONENT ---
-const getGeometry = (index) => {
-  switch (index % 4) {
-    case 0: return <boxGeometry args={[0.5, 0.5, 0.5]} />;
-    case 1: return <octahedronGeometry args={[0.45]} />;
-    case 2: return <torusGeometry args={[0.3, 0.12, 16, 32]} />;
-    case 3: return <icosahedronGeometry args={[0.45, 0]} />;
-    default: return <boxGeometry args={[0.5, 0.5, 0.5]} />;
-  }
+// --- SKILL ICON MAP ---
+const SKILL_ICONS = {
+  'C++': '⚡', 'JavaScript': '🟨', 'Java': '☕', 'PHP': '🐘', 'Dart': '🎯',
+  'HTML5': '🔷', 'CSS3': '🎨', 'React.js': '⚛️', 'Node.js': '🟩', 'Express.js': '🚀',
+  'Tailwind CSS': '💨', 'Git': '🔀', 'Redux': '🔮', 'TypeScript': '📘', 'Postman': '📮',
+  'Firebase': '🔥', 'Supabase': '🟢', 'MySQL': '🗄️', 'MongoDB': '🍃', 'PostgreSQL': '🐘',
+  'Flutter': '💙'
 };
 
-const SkillPill3D = ({ position, name, color, index = 0 }) => {
-  return (
-    <Float speed={2.5} rotationIntensity={2} floatIntensity={2} position={position}>
-      <mesh receiveShadow castShadow>
-        {getGeometry(index)}
-        <meshStandardMaterial color={color} roughness={0.1} metalness={0.8} emissive={color} emissiveIntensity={0.2} />
-      </mesh>
-      <Center position={[0, -0.9, 0]}>
-        <Text3D
-          font="https://unpkg.com/three@0.77.0/examples/fonts/helvetiker_bold.typeface.json"
-          size={0.22}
-          height={0.04}
-          curveSegments={12}
-          bevelEnabled
-          bevelThickness={0.01}
-          bevelSize={0.005}
-          bevelOffset={0}
-          bevelSegments={4}
-        >
-          {name}
-          <meshStandardMaterial color="#ffffff" />
-        </Text3D>
-      </Center>
-    </Float>
-  );
-};
+const SKILL_CATEGORIES = [
+  { key: 'all', label: 'All Skills', icon: null },
+  { key: 'languages', label: 'Languages', icon: null },
+  { key: 'web', label: 'Web & Frameworks', icon: null },
+  { key: 'tools', label: 'Tools & DevOps', icon: null },
+  { key: 'db', label: 'Databases', icon: null },
+];
 
-const SkillsCanvas = () => {
-  const skills3D = SKILLS.slice(0, 12).map((skill, index) => {
-      const phi = Math.acos(-1 + (2 * index) / 12);
-      const theta = Math.sqrt(12 * Math.PI) * phi;
-      const r = 3;
-      const x = r * Math.cos(theta) * Math.sin(phi);
-      const y = r * Math.sin(theta) * Math.sin(phi);
-      const z = r * Math.cos(phi);
-      return { ...skill, position: [x, y, z] };
-  });
+const InteractiveSkillsGrid = () => {
+  const [activeCategory, setActiveCategory] = useState('all');
+  const [hoveredSkill, setHoveredSkill] = useState(null);
+
+  const filteredSkills = activeCategory === 'all'
+    ? SKILLS
+    : SKILLS.filter(s => s.category === activeCategory);
 
   return (
-    <Canvas camera={{ position: [0, 0, 8], fov: 50 }}>
-      <ambientLight intensity={0.5} />
-      <directionalLight position={[10, 10, 10]} intensity={1} castShadow />
-      <directionalLight position={[-10, -10, -10]} intensity={0.5} color="#a855f7" />
-      <Environment preset="city" />
-      <group>
-        {skills3D.map((skill, i) => <SkillPill3D key={i} index={i} {...skill} />)}
-      </group>
-      <ContactShadows position={[0, -4, 0]} opacity={0.4} scale={20} blur={2} far={4} />
-      <OrbitControls autoRotate autoRotateSpeed={1.5} enableZoom={false} enablePan={false} />
-    </Canvas>
+    <div className="skills-interactive-section">
+      {/* Category Filter Tabs */}
+      <motion.div 
+        className="skills-filter-tabs"
+        initial={{ opacity: 0, y: 20 }}
+        whileInView={{ opacity: 1, y: 0 }}
+        viewport={{ once: true }}
+        transition={{ duration: 0.5 }}
+      >
+        {SKILL_CATEGORIES.map((cat) => (
+          <motion.button
+            key={cat.key}
+            className={`skill-filter-btn ${activeCategory === cat.key ? 'active' : ''}`}
+            onClick={() => setActiveCategory(cat.key)}
+            whileHover={{ scale: 1.05 }}
+            whileTap={{ scale: 0.95 }}
+          >
+            {cat.label}
+          </motion.button>
+        ))}
+      </motion.div>
+
+      {/* Skills Grid */}
+      <motion.div className="skills-cards-grid" layout>
+        <AnimatePresence mode="popLayout">
+          {filteredSkills.map((skill, index) => (
+            <motion.div
+              key={skill.name}
+              className={`skill-card ${hoveredSkill === skill.name ? 'hovered' : ''}`}
+              initial={{ opacity: 0, scale: 0.8, y: 20 }}
+              animate={{ opacity: 1, scale: 1, y: 0 }}
+              exit={{ opacity: 0, scale: 0.8, y: -20 }}
+              transition={{ duration: 0.3, delay: index * 0.04 }}
+              whileHover={{ scale: 1.08, y: -6 }}
+              onHoverStart={() => setHoveredSkill(skill.name)}
+              onHoverEnd={() => setHoveredSkill(null)}
+              style={{ '--skill-color': skill.color }}
+            >
+              <div className="skill-card-glow" />
+              <div className="skill-card-icon">
+                {SKILL_ICONS[skill.name] || '💡'}
+              </div>
+              <div className="skill-card-name">{skill.name}</div>
+              <div className="skill-card-dot" style={{ background: skill.color }} />
+            </motion.div>
+          ))}
+        </AnimatePresence>
+      </motion.div>
+    </div>
   );
 };
 
@@ -366,12 +484,76 @@ const AnimatedCounter = ({ value }) => {
 };
 
 
+// --- CERTIFICATE LIGHTBOX COMPONENT ---
+const CertificateLightbox = ({ cert, certs, onClose, onNav }) => {
+  const currentIdx = certs.findIndex(c => c.id === cert.id);
+
+  useEffect(() => {
+    const handler = (e) => {
+      if (e.key === 'Escape') onClose();
+      if (e.key === 'ArrowRight') onNav(1);
+      if (e.key === 'ArrowLeft') onNav(-1);
+    };
+    window.addEventListener('keydown', handler);
+    document.body.style.overflow = 'hidden';
+    return () => {
+      window.removeEventListener('keydown', handler);
+      document.body.style.overflow = '';
+    };
+  }, [onClose, onNav]);
+
+  return (
+    <motion.div
+      className="cert-lightbox-overlay"
+      initial={{ opacity: 0 }}
+      animate={{ opacity: 1 }}
+      exit={{ opacity: 0 }}
+      onClick={onClose}
+    >
+      <motion.div
+        className="cert-lightbox-box"
+        initial={{ scale: 0.85, opacity: 0, y: 40 }}
+        animate={{ scale: 1, opacity: 1, y: 0 }}
+        exit={{ scale: 0.85, opacity: 0, y: 40 }}
+        transition={{ type: 'spring', stiffness: 300, damping: 28 }}
+        onClick={e => e.stopPropagation()}
+      >
+        {/* Close button */}
+        <button className="cert-lb-close" onClick={onClose}><X size={22}/></button>
+
+        {/* Image */}
+        <img src={cert.image} alt={cert.title} className="cert-lb-img" />
+
+        {/* Info bar */}
+        <div className="cert-lb-info">
+          <div>
+            <div className="cert-lb-title">{cert.title}</div>
+            <div className="cert-lb-meta">{cert.issuer} · {cert.period}</div>
+          </div>
+          <div className="cert-lb-counter">{currentIdx + 1} / {certs.length}</div>
+        </div>
+
+        {/* Nav arrows */}
+        <button className="cert-lb-nav cert-lb-prev" onClick={() => onNav(-1)}>&#8249;</button>
+        <button className="cert-lb-nav cert-lb-next" onClick={() => onNav(1)}>&#8250;</button>
+      </motion.div>
+    </motion.div>
+  );
+};
+
 // --- MAIN APP COMPONENT ---
 function App() {
   const { theme, toggleTheme } = useTheme();
   const [isMenuOpen, setIsMenuOpen] = useState(false);
   const [activeSection, setActiveSection] = useState('Home');
   const [particlesInit, setParticlesInit] = useState(false);
+  const [selectedCert, setSelectedCert] = useState(null);
+
+  const handleCertNav = (dir) => {
+    const idx = CERTS.findIndex(c => c.id === selectedCert.id);
+    const next = CERTS[(idx + dir + CERTS.length) % CERTS.length];
+    setSelectedCert(next);
+  };
   
   const { scrollYProgress } = useScroll();
   const scaleX = useSpring(scrollYProgress, { stiffness: 100, damping: 30, restDelta: 0.001 });
@@ -405,6 +587,18 @@ function App() {
   return (
     <>
       <CustomCursor />
+      {/* Certificate Lightbox */}
+      <AnimatePresence>
+        {selectedCert && (
+          <CertificateLightbox
+            cert={selectedCert}
+            certs={CERTS}
+            onClose={() => setSelectedCert(null)}
+            onNav={handleCertNav}
+          />
+        )}
+      </AnimatePresence>
+
       {/* Background Particles layer */}
       {particlesInit && <Particles id="tsparticles" options={particlesOptions} className="particles-container" />}
 
@@ -508,7 +702,7 @@ function App() {
                   </Link>
                 </motion.div>
                 <motion.div whileHover={{ scale: 1.1 }} whileTap={{ scale: 0.95 }}>
-                  <a href="/Aditya_Resume.pdf" className="btn btn-outline" download>
+                  <a href="https://drive.google.com/file/d/1DlVc30ojFuMN7Hx2fjnZtMZhZfUY-51w/view?usp=sharing" className="btn btn-outline" target="_blank" rel="noreferrer">
                     <Download size={18} /> Download Resume
                   </a>
                 </motion.div>
@@ -577,8 +771,8 @@ function App() {
           </motion.div>
 
           <div className="skills-wrapper">
-            <motion.div className="skills-3d-container" initial={{ opacity: 0, scale: 0.9 }} whileInView={{ opacity: 1, scale: 1 }} viewport={{ once: true }} transition={{ duration: 0.8 }}>
-              <SkillsCanvas />
+            <motion.div initial={{ opacity: 0, y: 30 }} whileInView={{ opacity: 1, y: 0 }} viewport={{ once: true }} transition={{ duration: 0.6 }}>
+              <InteractiveSkillsGrid />
             </motion.div>
 
             {/* 6. Skill Progress Bar Animation */}
@@ -662,40 +856,145 @@ function App() {
         </div>
       </section>
 
-      {/* 10. Animated Counters (Achievements) */}
-      <section id="achievements" className="section" style={{ background: 'var(--bg-secondary)' }}>
+      {/* === ACHIEVEMENTS SECTION === */}
+      <section id="achievements" className="section achieve-section">
         <div className="container">
+          {/* Header */}
           <motion.div className="section-header" initial="hidden" whileInView="visible" viewport={{ once: true }} variants={slideLeft}>
-            <div className="section-badge"><Award size={16}/> Milestones</div>
+            <div className="section-badge"><Trophy size={16}/> Hall of Fame</div>
             <h2 className="section-title">Achievements</h2>
+            <p style={{ color: 'var(--text-secondary)', maxWidth: '560px', margin: '0 auto', fontSize: '1rem', lineHeight: 1.7 }}>
+              A snapshot of my coding journey — from competitive programming milestones to shipped products.
+            </p>
           </motion.div>
 
-          <div className="achievements-grid">
-            {ACHIEVEMENTS.map((item, index) => (
-              <motion.div 
-                key={index} className="glass-card achievement-card" 
-                initial="hidden" whileInView="visible" viewport={{ once: true }} variants={slideUp}
-                whileHover={{ scale: 1.05, y: -5, boxShadow: "0 10px 30px rgba(99, 102, 241, 0.2)" }}
-                style={{ position: 'relative', overflow: 'hidden' }}
+          {/* ── Scrolling Ticker ── */}
+          <motion.div
+            className="achieve-ticker-wrap"
+            initial={{ opacity: 0, y: 20 }}
+            whileInView={{ opacity: 1, y: 0 }}
+            viewport={{ once: true }}
+            transition={{ duration: 0.5 }}
+          >
+            <div className="achieve-ticker">
+              <div className="achieve-ticker-track">
+                {[...TICKER_ITEMS, ...TICKER_ITEMS].map((item, i) => (
+                  <span key={i} className="achieve-ticker-item">{item}</span>
+                ))}
+              </div>
+            </div>
+          </motion.div>
+
+          {/* ── Bento Grid ── */}
+          <div className="achieve-bento">
+
+            {/* Big stat: DSA Problems */}
+            <motion.div
+              className="achieve-bento-cell achieve-hero-card"
+              initial={{ opacity: 0, scale: 0.9 }}
+              whileInView={{ opacity: 1, scale: 1 }}
+              viewport={{ once: true }}
+              transition={{ duration: 0.6, delay: 0.1 }}
+              whileHover={{ y: -6 }}
+              style={{ '--card-color': '#6366f1' }}
+            >
+              <div className="achieve-hero-bg-number">600</div>
+              <div className="achieve-hero-icon">⚡</div>
+              <div className="achieve-hero-value">
+                <AnimatedCounter value={600} />+
+              </div>
+              <div className="achieve-hero-label">DSA Problems Solved</div>
+              <div className="achieve-hero-sub">LeetCode · GFG · CodeStudio</div>
+              <div className="achieve-platforms-pill">
+                <span>🟡 LeetCode</span>
+                <span>🟢 GFG</span>
+                <span>🟠 CodeStudio</span>
+              </div>
+            </motion.div>
+
+            {/* LeetCode Rating */}
+            <motion.div
+              className="achieve-bento-cell achieve-stat-card"
+              initial={{ opacity: 0, y: 30 }}
+              whileInView={{ opacity: 1, y: 0 }}
+              viewport={{ once: true }}
+              transition={{ duration: 0.5, delay: 0.2 }}
+              whileHover={{ y: -6 }}
+              style={{ '--card-color': '#f59e0b' }}
+            >
+              <div className="achieve-stat-top">
+                <span className="achieve-stat-emoji">🏆</span>
+                <span className="achieve-stat-badge" style={{ background: 'rgba(245,158,11,0.15)', color: '#f59e0b', border: '1px solid rgba(245,158,11,0.3)' }}>LeetCode</span>
+              </div>
+              <div className="achieve-stat-value" style={{ color: '#f59e0b' }}>
+                <AnimatedCounter value={1481} />
+              </div>
+              <div className="achieve-stat-label">Max Rating</div>
+              <div className="achieve-stat-sub">Competitive Programming</div>
+            </motion.div>
+
+            {/* Certifications */}
+            <motion.div
+              className="achieve-bento-cell achieve-stat-card"
+              initial={{ opacity: 0, y: 30 }}
+              whileInView={{ opacity: 1, y: 0 }}
+              viewport={{ once: true }}
+              transition={{ duration: 0.5, delay: 0.35 }}
+              whileHover={{ y: -6 }}
+              style={{ '--card-color': '#a855f7' }}
+            >
+              <div className="achieve-stat-top">
+                <span className="achieve-stat-emoji">🎓</span>
+                <span className="achieve-stat-badge" style={{ background: 'rgba(168,85,247,0.15)', color: '#a855f7', border: '1px solid rgba(168,85,247,0.3)' }}>Certified</span>
+              </div>
+              <div className="achieve-stat-value" style={{ color: '#a855f7' }}>
+                <AnimatedCounter value={2} />
+              </div>
+              <div className="achieve-stat-label">Certifications</div>
+              <div className="achieve-stat-sub">Full-Stack · Flutter</div>
+            </motion.div>
+
+            {/* Platform Cards - Full Width Row */}
+            {PLATFORMS.map((platform, idx) => (
+              <motion.a
+                key={platform.name}
+                href={platform.link}
+                target="_blank"
+                rel="noreferrer"
+                className="achieve-bento-cell achieve-platform-card"
+                initial={{ opacity: 0, y: 30 }}
+                whileInView={{ opacity: 1, y: 0 }}
+                viewport={{ once: true }}
+                transition={{ duration: 0.5, delay: 0.4 + idx * 0.1 }}
+                whileHover={{ y: -6, scale: 1.02 }}
+                style={{
+                  '--card-color': platform.color,
+                  background: platform.bg,
+                  borderColor: platform.border,
+                }}
               >
-                <div style={{ position: 'absolute', top: '-10px', right: '-10px', opacity: 0.05, transform: 'rotate(15deg) scale(3)' }}>
-                  {item.icon}
+                <div className="achieve-platform-header">
+                  <div className="achieve-platform-name">
+                    <span style={{ fontSize: '1.5rem' }}>{platform.emoji}</span>
+                    <div>
+                      <div style={{ fontWeight: 800, fontSize: '1.1rem', color: platform.color }}>{platform.name}</div>
+                      <div style={{ fontSize: '0.78rem', color: 'var(--text-muted)', fontFamily: "'Fira Code', monospace" }}>{platform.handle}</div>
+                    </div>
+                  </div>
+                  <ExternalLink size={16} style={{ color: platform.color, opacity: 0.7 }} />
                 </div>
-                <div style={{ width: '64px', height: '64px', borderRadius: '16px', background: 'var(--gradient-1)', display: 'flex', alignItems: 'center', justifyContent: 'center', color: 'white', marginBottom: '16px', boxShadow: '0 8px 16px rgba(99, 102, 241, 0.3)' }}>
-                  {item.icon}
+                <div className="achieve-platform-stats">
+                  {platform.stats.map((s, si) => (
+                    <div key={si} className="achieve-platform-stat">
+                      <div className="achieve-platform-stat-val" style={{ color: platform.color }}>{s.value}</div>
+                      <div className="achieve-platform-stat-key">{s.label}</div>
+                    </div>
+                  ))}
                 </div>
-                <div className="achievement-counter">
-                  <AnimatedCounter value={item.value} />{item.suffix}
-                </div>
-                <div className="achievement-text" style={{ fontSize: '1.1rem', fontWeight: '700', color: 'var(--text-primary)', marginTop: '8px' }}>
-                  {item.label}
-                </div>
-                <div style={{ fontSize: '0.9rem', color: 'var(--text-secondary)', marginTop: '4px' }}>
-                  {item.desc}
-                </div>
-              </motion.div>
+              </motion.a>
             ))}
-          </div>
+
+          </div>{/* end bento grid */}
         </div>
       </section>
 
@@ -724,47 +1023,85 @@ function App() {
         </div>
       </section>
 
-      {/* Training & Certificates */}
+      {/* Training */}
       <section id="training" className="section" style={{ background: 'var(--bg-secondary)' }}>
         <div className="container">
           <motion.div className="section-header" initial="hidden" whileInView="visible" viewport={{ once: true }} variants={slideUp}>
             <div className="section-badge"><BookOpen size={16}/> Continuous Learning</div>
-            <h2 className="section-title">Training & Certificates</h2>
+            <h2 className="section-title">Training</h2>
           </motion.div>
 
-          <div className="training-grid" style={{ display: 'grid', gap: '40px', gridTemplateColumns: 'repeat(auto-fit, minmax(300px, 1fr))', alignItems: 'start' }}>
-            <motion.div initial="hidden" whileInView="visible" viewport={{ once: true }} variants={slideLeft}>
-              <h3 style={{marginBottom: '24px', fontSize: '1.4rem'}}><Terminal size={20} style={{display:'inline', verticalAlign:'middle', marginRight:'8px'}}/> Training</h3>
-              {TRAINING.map((training, i) => (
-                <motion.div key={i} className="glass-card training-card" style={{ padding: '24px', marginBottom: '20px' }} whileHover={{ scale: 1.02 }}>
-                  <div className="training-header">
-                    <h4 className="training-title" style={{ color: 'var(--accent-primary)', fontSize: '1.2rem'}}>{training.title}</h4>
-                    <span className="education-period">{training.period}</span>
-                  </div>
-                  <ul className="training-list" style={{ marginTop: '15px' , display: 'flex', flexDirection: 'column', gap: '10px'}}>
-                    {training.details.map((detail, j) => <li key={j} style={{ display: 'flex', gap: '8px' }}><span style={{color: 'var(--accent-primary)'}}>▸</span> {detail}</li>)}
-                  </ul>
-                </motion.div>
-              ))}
-            </motion.div>
+          <motion.div initial="hidden" whileInView="visible" viewport={{ once: true }} variants={slideLeft}>
+            {TRAINING.map((training, i) => (
+              <motion.div key={i} className="glass-card training-card" style={{ padding: '32px', marginBottom: '20px' }} whileHover={{ scale: 1.01, x: 6 }}>
+                <div className="training-header">
+                  <h4 className="training-title" style={{ color: 'var(--accent-primary)', fontSize: '1.25rem' }}>{training.title}</h4>
+                  <span className="education-period">{training.period}</span>
+                </div>
+                <ul className="training-list" style={{ marginTop: '16px', display: 'flex', flexDirection: 'column', gap: '12px' }}>
+                  {training.details.map((detail, j) => <li key={j} style={{ display: 'flex', gap: '10px', color: 'var(--text-secondary)' }}><span style={{ color: 'var(--accent-primary)', flexShrink: 0 }}>▸</span>{detail}</li>)}
+                </ul>
+              </motion.div>
+            ))}
+          </motion.div>
+        </div>
+      </section>
 
-            <motion.div initial="hidden" whileInView="visible" viewport={{ once: true }} variants={slideRight}>
-              <h3 style={{marginBottom: '24px', fontSize: '1.4rem'}}><Award size={20} style={{display:'inline', verticalAlign:'middle', marginRight:'8px'}}/> Certificates</h3>
-              <div style={{ display: 'flex', flexDirection: 'column', gap: '20px' }}>
-                {CERTIFICATES.map((cert, i) => (
-                  <motion.div key={i} className="glass-card" style={{ padding: '24px', display: 'flex', gap: '16px', alignItems: 'center' }} whileHover={{ scale: 1.05 }}>
-                    <div style={{ width: '48px', height: '48px', borderRadius: '12px', background: 'var(--gradient-2)', display: 'flex', alignItems:'center', justifyContent:'center'}}>
-                      <CheckCircle2 color="white" />
+      {/* === CERTIFICATES SECTION === */}
+      <section id="certificates" className="section">
+        <div className="container">
+          <motion.div className="section-header" initial="hidden" whileInView="visible" viewport={{ once: true }} variants={slideUp}>
+            <div className="section-badge"><Award size={16}/> Verified Credentials</div>
+            <h2 className="section-title">Certificates</h2>
+            <p style={{ color: 'var(--text-secondary)', maxWidth: '520px', margin: '0 auto', fontSize: '1rem', lineHeight: 1.7 }}>
+              Click any certificate to view it in full detail.
+            </p>
+          </motion.div>
+
+          <motion.div
+            className="certs-grid"
+            initial="hidden"
+            whileInView="visible"
+            viewport={{ once: true }}
+            variants={staggerContainer}
+          >
+            {CERTS.map((cert, i) => (
+              <motion.div
+                key={cert.id}
+                className="cert-card"
+                variants={slideUp}
+                whileHover={{ y: -8, scale: 1.03 }}
+                onClick={() => setSelectedCert(cert)}
+                style={{ '--cert-color': cert.color }}
+              >
+                {/* Top color stripe */}
+                <div className="cert-card-stripe" style={{ background: cert.color }} />
+
+                {/* Preview thumbnail */}
+                <div className="cert-card-thumb">
+                  <img src={cert.image} alt={cert.title} />
+                  <div className="cert-card-overlay">
+                    <div className="cert-card-view-btn">
+                      <ExternalLink size={20} /> View Certificate
                     </div>
-                    <div>
-                      <h4 style={{ fontSize: '1rem' }}>{cert.title}</h4>
-                      <p style={{ color: 'var(--text-secondary)'}}>{cert.period}</p>
-                    </div>
-                  </motion.div>
-                ))}
-              </div>
-            </motion.div>
-          </div>
+                  </div>
+                </div>
+
+                {/* Info */}
+                <div className="cert-card-body">
+                  <span className="cert-card-tag" style={{ background: `${cert.color}22`, color: cert.color, border: `1px solid ${cert.color}44` }}>
+                    {cert.tag}
+                  </span>
+                  <h3 className="cert-card-title">{cert.title}</h3>
+                  <div className="cert-card-meta">
+                    <span className="cert-card-issuer">{cert.issuer}</span>
+                    <span className="cert-card-period">{cert.period}</span>
+                  </div>
+                  <div className="cert-card-hours" style={{ color: cert.color }}>{cert.hours}</div>
+                </div>
+              </motion.div>
+            ))}
+          </motion.div>
         </div>
       </section>
 
