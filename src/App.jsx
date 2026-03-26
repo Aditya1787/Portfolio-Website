@@ -12,6 +12,7 @@ import { Link } from 'react-scroll';
 // New Animation Dependencies
 import { Particles, initParticlesEngine } from "@tsparticles/react";
 import { loadSlim } from "@tsparticles/slim";
+import profilePic from './assets/profile pic.png';
 
 // --- DATA ---
 const NAV_LINKS = ['Home', 'About', 'Skills', 'Projects', 'Achievements', 'Education', 'Training', 'Certificates', 'Contact'];
@@ -157,27 +158,27 @@ const CERTS = [
     period: 'Jan 2025 – May 2025',
     hours: '72 Hours',
     color: '#ec4899',
-    image: '/certificates/cert_java.png',
+    image: '/certificates/Java Programming .png',
     tag: 'Programming'
   },
   {
     id: 2,
-    title: 'Object Oriented Programming',
+    title: 'C++ Programming',
     issuer: 'neo colab / LPU',
     period: 'Aug 2024 – Dec 2024',
     hours: '72 Hours',
     color: '#f59e0b',
-    image: '/certificates/cert_oop.png',
+    image: '/certificates/C++ programming.png',
     tag: 'Core CS'
   },
   {
     id: 3,
-    title: 'Computer Programming',
+    title: 'C Programming',
     issuer: 'neo colab / LPU',
     period: 'Jan 2024 – May 2024',
     hours: '72 Hours',
     color: '#06b6d4',
-    image: '/certificates/cert_cp.png',
+    image: '/certificates/C programming.png',
     tag: 'Programming'
   },
   {
@@ -187,27 +188,27 @@ const CERTS = [
     period: 'Aug 2024 – Dec 2024',
     hours: '72 Hours',
     color: '#6366f1',
-    image: '/certificates/cert_dsa.png',
+    image: '/certificates/Data structure and algorithm.png',
     tag: 'DSA'
   },
   {
     id: 5,
-    title: 'Full Stack Development (React & Node)',
+    title: 'Full Stack Development',
     issuer: 'LPU Centre for Professional Enhancement',
     period: 'Jun 2025 – Jul 2025',
     hours: 'Grade B',
     color: '#f97316',
-    image: '/certificates/cert_fullstack.png',
+    image: '/certificates/mern stack.png',
     tag: 'Full Stack'
   },
   {
     id: 6,
-    title: 'Introduction to Mobile App Development',
+    title: 'App Development',
     issuer: 'IBM / Coursera',
     period: 'Mar 2026',
     hours: 'Verified Certificate',
     color: '#1d4ed8',
-    image: '/certificates/cert_mobile.png',
+    image: '/certificates/App Development.png',
     tag: 'Mobile Dev'
   },
 ];
@@ -690,6 +691,7 @@ function App() {
               </motion.h2>
               
               <motion.p variants={slideLeft} className="hero-description">
+                &gt; Flutter App Dev_<br/>
                 I specialize in building scalable web applications and robust mobile experiences. 
                 Proficient in React, Node.js, and Flutter, I engineer solutions that are both beautiful and performant.
               </motion.p>
@@ -731,32 +733,50 @@ function App() {
       {/* 9. Section Slide Animation: About (slide left) */}
       <section id="about" className="section">
         <div className="container">
-          <motion.div className="section-header" initial="hidden" whileInView="visible" viewport={{ once: true, margin: "-100px" }} variants={slideLeft}>
-            <div className="section-badge"><Terminal size={16}/> Who am I?</div>
-            <h2 className="section-title">About Me</h2>
-          </motion.div>
-          
-          <div className="about-grid">
-            <motion.div className="about-text glass-card" style={{ padding: '40px' }} initial="hidden" whileInView="visible" viewport={{ once: true }} variants={slideLeft}>
-              <p>I am Aditya Kumar Mishra, an aspiring software engineer pursuing B.Tech in Computer Science and Engineering at Lovely Professional University.</p>
-              <p>My passion lies in crafting efficient, scalable, and user-friendly digital solutions. I have cultivated a strong foundation in both <strong>Full Stack Web Development</strong> (MERN stack) and <strong>Mobile App Development</strong> (Flutter & Dart).</p>
-              <div className="about-highlights">
-                {['💡 Problem-Solving', '🚀 Quick Learner', '📊 Project Mgmt.', '🧠 Analytical Thinking'].map((t, i) => (
-                  <div key={i} className="about-highlight-item">{t}</div>
-                ))}
+          <div className="about-grid" style={{ alignItems: 'center' }}>
+            {/* Left Column: Text & Cards */}
+            <motion.div className="about-content" initial="hidden" whileInView="visible" viewport={{ once: true }} variants={staggerContainer} style={{ display: 'flex', flexDirection: 'column', gap: '30px' }}>
+              
+              <div style={{ textAlign: 'left' }}>
+                <motion.div variants={slideLeft} className="section-badge" style={{ marginBottom: '16px' }}>
+                  <Terminal size={16}/> Who am I?
+                </motion.div>
+                <motion.h2 variants={slideLeft} className="section-title" style={{ fontSize: 'clamp(2.5rem, 4vw, 3.5rem)', marginBottom: '20px', textAlign: 'left' }}>
+                  About Me
+                </motion.h2>
               </div>
+
+              <motion.div className="about-text" variants={slideLeft} style={{ padding: 0, border: 'none', background: 'transparent', boxShadow: 'none' }}>
+                <p style={{ color: 'var(--text-secondary)', fontSize: '1.05rem', lineHeight: '1.8', marginBottom: '16px' }}>I am Aditya Kumar Mishra, an aspiring software engineer pursuing B.Tech in Computer Science and Engineering at Lovely Professional University.</p>
+                <p style={{ color: 'var(--text-secondary)', fontSize: '1.05rem', lineHeight: '1.8', marginBottom: '24px' }}>My passion lies in crafting efficient, scalable, and user-friendly digital solutions. I have cultivated a strong foundation in both <strong>Full Stack Web Development</strong> (MERN stack) and <strong>Mobile App Development</strong> (Flutter & Dart).</p>
+                
+                <div className="about-highlights">
+                  {['💡 Problem-Solving', '🚀 Quick Learner', '📊 Project Mgmt.', '🧠 Analytical Thinking'].map((t, i) => (
+                    <div key={i} className="about-highlight-item" style={{ background: 'var(--bg-card)', border: '1px solid var(--border-color)' }}>{t}</div>
+                  ))}
+                </div>
+              </motion.div>
+
+              <motion.div className="about-cards" style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fit, minmax(200px, 1fr))', gap: '20px', flexDirection: 'unset' }} variants={slideUp}>
+                {[
+                  { title: 'Web Development', desc: 'Building dynamic and state-of-the-art web applications using React.js, Tailwind CSS, Node.js.' },
+                  { title: 'App Development', desc: 'Engineering cross-platform mobile experiences with Flutter and Supabase.' },
+                  { title: 'Core CS Fundamentals', desc: 'Deep understanding of Data Structures & Algorithms and Database Management Systems.' }
+                ].map((card, i) => (
+                  <motion.div key={i} className="glass-card about-card" style={{ padding: '20px', borderLeft: '3px solid var(--accent-primary)' }}>
+                    <h4 style={{ marginBottom: '8px', color: 'var(--accent-primary)' }}>{card.title}</h4>
+                    <p style={{ fontSize: '0.9rem', color: 'var(--text-secondary)' }}>{card.desc}</p>
+                  </motion.div>
+                ))}
+              </motion.div>
             </motion.div>
 
-            <motion.div className="about-cards" initial="hidden" whileInView="visible" viewport={{ once: true }} variants={slideRight}>
-              {[
-                { title: 'Web Development', desc: 'Building dynamic and state-of-the-art web applications using React.js, Tailwind CSS, Node.js.' },
-                { title: 'App Development', desc: 'Engineering cross-platform mobile experiences with Flutter and Supabase.' },
-                { title: 'Core CS Fundamentals', desc: 'Deep understanding of Data Structures & Algorithms and Database Management Systems.' }
-              ].map((card, i) => (
-                <motion.div key={i} className="glass-card about-card" variants={slideUp}>
-                  <h4>{card.title}</h4><p>{card.desc}</p>
-                </motion.div>
-              ))}
+            {/* Right Column: Profile Image */}
+            <motion.div className="about-image-wrapper" initial="hidden" whileInView="visible" viewport={{ once: true }} variants={slideRight} style={{ display: 'flex', justifyContent: 'center', alignItems: 'center' }}>
+              <div style={{ width: '100%', maxWidth: '400px', aspectRatio: '4/5', borderRadius: '16px', overflow: 'hidden', border: '1px solid var(--border-color)', boxShadow: 'var(--shadow-card)', position: 'relative' }}>
+                <img src={profilePic} alt="Aditya Kumar Mishra" style={{ width: '100%', height: '100%', objectFit: 'cover', display: 'block' }} />
+                <div style={{ position: 'absolute', inset: 0, background: 'linear-gradient(to top, var(--bg-primary) 0%, transparent 40%)', opacity: 0.6 }} />
+              </div>
             </motion.div>
           </div>
         </div>
@@ -791,7 +811,7 @@ function App() {
                         <CheckCircle2 size={16} style={{ color: 'var(--accent-primary)' }} />
                         {skill.name}
                       </span>
-                      <span style={{ fontWeight: 'bold', color: 'var(--accent-primary)', fontSize: '1.1rem' }}>{skill.level}%</span>
+
                     </div>
                     <div className="progress-track" style={{ height: '12px', background: 'rgba(255, 255, 255, 0.05)', borderRadius: '10px', overflow: 'hidden', border: '1px solid var(--border-color)' }}>
                       {/* Loading Bar filling up on display */}
