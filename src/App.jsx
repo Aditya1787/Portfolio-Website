@@ -13,6 +13,7 @@ import { Link } from 'react-scroll';
 import { Particles, initParticlesEngine } from "@tsparticles/react";
 import { loadSlim } from "@tsparticles/slim";
 import paperCraftAvatar from './assets/paper_craft_avatar.png';
+import Chatbot from './Chatbot';
 
 // --- DATA ---
 const NAV_LINKS = ['Home', 'About', 'Skills', 'Projects', 'Achievements', 'Education', 'Training', 'Certificates', 'Contact'];
@@ -455,6 +456,8 @@ const CustomCursor = () => {
   useEffect(() => {
     const updateMousePosition = (e) => {
       setMousePosition({ x: e.clientX, y: e.clientY });
+      document.documentElement.style.setProperty('--mouse-x', `${e.clientX}px`);
+      document.documentElement.style.setProperty('--mouse-y', `${e.clientY}px`);
     };
 
     const handleMouseOver = (e) => {
@@ -695,6 +698,15 @@ function App() {
         )}
       </AnimatePresence>
 
+      {/* Dynamic Ambient Background Lighting Layer */}
+      <div className="ambient-lighting-bg">
+        <div className="ambient-orb ambient-orb-1" />
+        <div className="ambient-orb ambient-orb-2" />
+        <div className="ambient-orb ambient-orb-3" />
+        <div className="ambient-orb ambient-orb-4" />
+      </div>
+      <div className="cursor-ambient-spotlight" />
+
       {/* Background Particles layer */}
       {particlesInit && <Particles id="tsparticles" options={particlesOptions} className="particles-container" />}
 
@@ -715,7 +727,7 @@ function App() {
                   to={link.toLowerCase()} 
                   spy={true} 
                   smooth={true} 
-                  offset={-70} 
+                  offset={0} 
                   duration={500} 
                   className={`navbar-link ${activeSection === link ? 'active' : ''}`}
                   onSetActive={() => setActiveSection(link)}
@@ -748,7 +760,7 @@ function App() {
             >
               {NAV_LINKS.map(link => (
                 <Link 
-                  key={link} to={link.toLowerCase()} spy={true} smooth={true} offset={-70} duration={500}
+                  key={link} to={link.toLowerCase()} spy={true} smooth={true} offset={0} duration={500}
                   className="mobile-menu-link" onClick={() => setIsMenuOpen(false)}
                 >
                   {link}
@@ -787,7 +799,6 @@ function App() {
               </motion.h2>
               
               <motion.p variants={slideLeft} className="hero-description" style={{ textAlign: 'left' }}>
-                &gt; Flutter & MERN Stack Dev_<br/>
                 Building scalable web applications and robust mobile experiences with a touch of art and engineering.
               </motion.p>
               
@@ -1414,11 +1425,14 @@ function App() {
       </section>
 
       {/* Footer */}
-      <footer className="footer" style={{ position: 'relative', zIndex: 10 }}>
+      <footer className="footer">
         <div className="container">
           <p>© {new Date().getFullYear()} Designed & Built by <span className="footer-gradient">Aditya Kumar Mishra</span>.</p>
         </div>
       </footer>
+
+      {/* AI Portfolio Assistant Chatbot */}
+      <Chatbot />
     </>
   );
 }
