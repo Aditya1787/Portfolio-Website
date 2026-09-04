@@ -15,8 +15,13 @@ import { loadSlim } from "@tsparticles/slim";
 import paperCraftAvatar from './assets/paper_craft_avatar.png';
 import Chatbot from './Chatbot';
 
+// Booking & Admin System Components
+import BookingSection from './components/BookingSection';
+import AdminLogin from './components/AdminLogin';
+import AdminDashboard from './components/AdminDashboard';
+
 // --- DATA ---
-const NAV_LINKS = ['Home', 'About', 'Skills', 'Projects', 'Achievements', 'Education', 'Training', 'Certificates', 'Contact'];
+const NAV_LINKS = ['Home', 'About', 'Skills', 'Projects', 'Achievements', 'Education', 'Training', 'Certificates', 'Appointment', 'Contact'];
 
 const SKILLS = [
   // Languages
@@ -642,11 +647,67 @@ const CertificateLightbox = ({ cert, certs, onClose, onNav }) => {
 
 // --- MAIN APP COMPONENT ---
 function App() {
+  const [currentPath, setCurrentPath] = useState(window.location.pathname);
+  const [authUser, setAuthUser] = useState(null);
+  const [checkingAuth, setCheckingAuth] = useState(true);
+
   const { theme, toggleTheme } = useTheme();
   const [isMenuOpen, setIsMenuOpen] = useState(false);
   const [activeSection, setActiveSection] = useState('Home');
   const [particlesInit, setParticlesInit] = useState(false);
   const [selectedCert, setSelectedCert] = useState(null);
+
+  useEffect(() => {
+    const handlePopState = () => setCurrentPath(window.location.pathname);
+    window.addEventListener('popstate', handlePopState);
+
+    fetch('/api/auth/me')
+      .then(res => {
+        if (res.ok) return res.json();
+        throw new Error('Unauthenticated');
+      })
+      .then(data => setAuthUser(data.user))
+      .catch(() => setAuthUser(null))
+      .finally(() => setCheckingAuth(false));
+
+    return () => window.removeEventListener('popstate', handlePopState);
+  }, []);
+
+  const handleLoginSuccess = (user) => {
+    setAuthUser(user);
+    window.history.pushState({}, '', '/admin/dashboard');
+    setCurrentPath('/admin/dashboard');
+  };
+
+  const handleLogout = async () => {
+    try {
+      await fetch('/api/auth/logout', { method: 'POST' });
+    } catch (e) {}
+    setAuthUser(null);
+    window.history.pushState({}, '', '/admin/login');
+    setCurrentPath('/admin/login');
+  };
+
+  if (currentPath === '/admin/login') {
+    if (authUser) {
+      return <><CustomCursor /><AdminDashboard currentUser={authUser} onLogout={handleLogout} /></>;
+    }
+    return <><CustomCursor /><AdminLogin onLoginSuccess={handleLoginSuccess} /></>;
+  }
+
+  if (currentPath === '/admin/dashboard') {
+    if (checkingAuth) {
+      return (
+        <div style={{ minHeight: '100vh', background: 'var(--bg-primary)', display: 'flex', alignItems: 'center', justifyContent: 'center' }}>
+          <div className="spin" style={{ width: '32px', height: '32px', border: '4px solid var(--accent-primary)', borderTopColor: 'transparent', borderRadius: '50%' }} />
+        </div>
+      );
+    }
+    if (!authUser) {
+      return <><CustomCursor /><AdminLogin onLoginSuccess={handleLoginSuccess} /></>;
+    }
+    return <><CustomCursor /><AdminDashboard currentUser={authUser} onLogout={handleLogout} /></>;
+  }
 
   const handleCertNav = (dir) => {
     const idx = CERTS.findIndex(c => c.id === selectedCert.id);
@@ -1365,6 +1426,9 @@ function App() {
           </motion.div>
         </div>
       </section>
+
+      {/* Appointment Booking Section */}
+      <BookingSection />
 
       {/* Contact Section */}
       <section id="contact" className="section">

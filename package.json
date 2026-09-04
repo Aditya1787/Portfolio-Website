@@ -4,7 +4,10 @@
   "version": "0.0.0",
   "type": "module",
   "scripts": {
-    "dev": "vite",
+    "dev": "concurrently \"node server/index.js\" \"vite\"",
+    "server": "node server/index.js",
+    "client": "vite",
+    "seed": "node -e \"import('./server/db.js').then(m => { m.initDb(); console.log('Database seeded.'); process.exit(0); })\"",
     "build": "vite build",
     "lint": "eslint .",
     "preview": "vite preview"
@@ -14,18 +17,30 @@
     "@react-three/fiber": "^9.5.0",
     "@tsparticles/react": "^3.0.0",
     "@tsparticles/slim": "^3.9.1",
+    "bcryptjs": "^3.0.3",
+    "better-sqlite3": "^13.0.3",
+    "concurrently": "^10.0.5",
+    "cookie-parser": "^1.4.7",
+    "cors": "^2.8.6",
+    "express": "^5.2.1",
+    "express-rate-limit": "^8.7.0",
     "framer-motion": "^12.38.0",
+    "jsonwebtoken": "^9.0.3",
     "lucide-react": "^0.577.0",
+    "nodemailer": "^10.0.0",
     "react": "^19.2.4",
     "react-countup": "^6.5.3",
     "react-dom": "^19.2.4",
     "react-scroll": "^1.9.3",
     "react-type-animation": "^3.2.0",
+    "socket.io": "^4.8.3",
+    "socket.io-client": "^4.8.3",
     "three": "^0.183.2",
     "tsparticles": "^3.9.1"
   },
   "devDependencies": {
     "@eslint/js": "^9.39.4",
+    "@tailwindcss/vite": "^4.3.3",
     "@types/react": "^19.2.14",
     "@types/react-dom": "^19.2.3",
     "@vitejs/plugin-react": "^6.0.1",
@@ -33,6 +48,7 @@
     "eslint-plugin-react-hooks": "^7.0.1",
     "eslint-plugin-react-refresh": "^0.5.2",
     "globals": "^17.4.0",
+    "tailwindcss": "^4.3.3",
     "vite": "^8.0.1"
   }
 }
