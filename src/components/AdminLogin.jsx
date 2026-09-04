@@ -168,30 +168,6 @@ export default function AdminLogin({ onLoginSuccess }) {
             {loading ? 'Authenticating...' : 'Sign In to Dashboard'}
           </button>
         </form>
-
-        <div style={{ marginTop: '28px', paddingTop: '20px', borderTop: '1px solid var(--border-color)' }}>
-          <div style={{ fontSize: '0.75rem', fontWeight: '800', color: 'var(--text-muted)', display: 'flex', alignItems: 'center', gap: '6px', marginBottom: '12px' }}>
-            <KeyRound size={14} style={{ color: 'var(--accent-primary)' }} /> Quick Credentials Fill:
-          </div>
-          <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr', gap: '8px' }}>
-            <button
-              type="button"
-              onClick={() => setDemoAccount('adityam8787@gmail.com', 'iammthebest@878601')}
-              className="btn"
-              style={{ padding: '8px', fontSize: '0.75rem', background: 'rgba(147, 51, 234, 0.15)', color: '#a855f7', border: '1px solid rgba(147, 51, 234, 0.3)', width: '100%', justifyContent: 'center' }}
-            >
-              👑 Owner
-            </button>
-            <button
-              type="button"
-              onClick={() => setDemoAccount('assistant1@gmail.com', 'assistant@adi@8786')}
-              className="btn"
-              style={{ padding: '8px', fontSize: '0.75rem', background: 'rgba(37, 99, 235, 0.15)', color: 'var(--accent-primary)', border: '1px solid rgba(37, 99, 235, 0.3)', width: '100%', justifyContent: 'center' }}
-            >
-              ⚡ Assistant 1
-            </button>
-          </div>
-        </div>
       </motion.div>
     </div>
   );
